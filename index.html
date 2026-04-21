@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#1a73e8">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Asistencia">
+  <title>Registro de Asistencia</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { height: 100%; overflow: hidden; margin: 0; }
+    body { background: #f0f2f5; font-family: 'Segoe UI', sans-serif; }
+
+    /* ── Contenedor principal ── */
+    .app-container {
+      max-width: 480px; margin: auto; background: white;
+      height: 100vh; height: 100dvh;
+      display: flex; flex-direction: column;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      overflow: hidden; position: relative;
+    }
+
+    /* ── Header ── */
+    .header {
+      padding: 12px 18px; border-bottom: 1px solid #dee2e6;
+      text-align: center; font-weight: 700; color: #1a73e8;
+      font-size: 1.05rem; letter-spacing: 0.5px; flex-shrink: 0;
+    }
+
+    /* ══════════════════════════════════════
+       PANTALLA DE SELECCIÓN DE CAMPUS
+    ══════════════════════════════════════ */
+    #screen-campus {
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 28px 24px; gap: 20px;
+    }
+    .campus-intro {
+      text-align: center;
+    }
+    .campus-intro .campus-icon {
+      font-size: 3rem; margin-bottom: 10px; display: block;
+    }
+    .campus-intro h2 {
+      font-size: 1.25rem; font-weight: 700; color: #202124; margin: 0 0 6px;
+    }
+    .campus-intro p {
+      font-size: 0.88rem; color: #5f6368; margin: 0;
+    }
+
+    .campus-buttons {
+      display: flex; flex-direction: column;
+      gap: 14px; width: 100%;
+    }
+    .btn-campus {
+      display: flex; align-items: center; gap: 16px;
+      background: #fff; border: 2px solid #dadce0;
+      border-radius: 14px; padding: 18px 22px;
+      cursor: pointer; transition: all 0.18s ease;
+      text-align: left; width: 100%;
+    }
+    .btn-campus:hover {
+      border-color: #1a73e8;
+      box-shadow: 0 4px 14px rgba(26,115,232,0.15);
+      transform: translateY(-2px);
+    }
+    .btn-campus:active {
+      transform: translateY(0);
+      box-shadow: none;
+    }
+    .btn-campus.selected {
+      border-color: #1a73e8;
+      background: #e8f0fe;
+    }
+    .campus-badge {
+      width: 52px; height: 52px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.6rem; flex-shrink: 0;
+    }
+    .campus-badge.sur   { background: #e8f0fe; }
+    .campus-badge.nac   { background: #fce8e6; }
+    .campus-label { flex: 1; }
+    .campus-label strong {
+      display: block; font-size: 1rem; font-weight: 700;
+      color: #202124; margin-bottom: 2px;
+    }
+    .campus-label span {
+      font-size: 0.8rem; color: #5f6368;
+    }
+    .campus-arrow { font-size: 1.1rem; color: #9aa0a6; }
+
+    /* ══════════════════════════════════════
+       PANTALLA DE REGISTRO
+    ══════════════════════════════════════ */
+    #screen-registro {
+      flex: 1; display: none; flex-direction: column; overflow: hidden;
+    }
+
+    /* Banner de campus activo */
+    .campus-active-bar {
+      background: #1a73e8; color: white;
+      padding: 8px 16px;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .campus-active-bar .campus-name {
+      font-weight: 700; font-size: 0.95rem;
+    }
+    .campus-active-bar .campus-change {
+      background: rgba(255,255,255,0.2); border: none; color: white;
+      border-radius: 6px; padding: 4px 10px; font-size: 0.78rem;
+      cursor: pointer; font-weight: 600; transition: background 0.15s;
+    }
+    .campus-active-bar .campus-change:hover { background: rgba(255,255,255,0.35); }
+
+    .form-body {
+      padding: 16px 18px; flex-grow: 1; overflow: hidden;
+      display: flex; flex-direction: column; justify-content: center;
+    }
+    .field-label {
+      font-weight: 600; color: #5f6368; font-size: 0.82rem;
+      text-transform: uppercase; margin-bottom: 5px; display: block; letter-spacing: 0.4px;
+    }
+    .input-group {
+      border: 1.5px solid #dadce0; border-radius: 8px;
+      overflow: hidden; transition: border-color 0.2s;
+    }
+    .input-group:focus-within { border-color: #1a73e8; }
+    #reader {
+      width: 100%; border-radius: 12px; display: none; margin-bottom: 12px;
+      border: 2px solid #1a73e8; overflow: hidden; background: #000;
+    }
+    .form-group { margin-bottom: 14px; }
+    .hint-text { font-size: 0.78rem; color: #9aa0a6; margin-top: 4px; }
+
+    .install-banner {
+      background: #e6f4ea; border: 1.5px solid #34a853;
+      border-radius: 10px; padding: 10px 14px; margin-bottom: 14px;
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    }
+    .install-banner p { margin: 0; font-size: 0.85rem; color: #1e7e34; line-height: 1.3; }
+    .btn-install {
+      background: #34a853; color: white; border: none;
+      padding: 8px 16px; border-radius: 6px; font-weight: 600;
+      font-size: 0.85rem; cursor: pointer; white-space: nowrap;
+    }
+
+    .footer {
+      display: flex; border-top: 1px solid #dee2e6;
+      padding: 10px 12px; gap: 10px; flex-shrink: 0;
+    }
+    .btn-footer {
+      flex: 1; padding: 12px; border-radius: 8px; border: none;
+      font-weight: 600; cursor: pointer; font-size: 1rem;
+      transition: opacity 0.2s;
+    }
+    .btn-footer:active { opacity: 0.8; }
+    .btn-cancel { background: #f1f3f4; color: #5f6368; }
+    .btn-save { background: #1a73e8; color: white; }
+    .btn-save:disabled { background: #a8c7fa; cursor: not-allowed; }
+  </style>
+</head>
+<body>
+<div class="app-container">
+
+  <!-- ── Header ── -->
+  <div class="header">📋 REGISTRO DE ASISTENCIA</div>
+
+  <!-- ══════════════════════════════════════
+       PANTALLA 1: Selección de campus
+  ══════════════════════════════════════ -->
+  <div id="screen-campus">
+    <div class="campus-intro">
+      <span class="campus-icon">🏫</span>
+      <h2>¿Desde qué campus registras?</h2>
+      <p>Selecciona la sede para guardar las asistencias en la hoja correcta.</p>
+    </div>
+
+    <div class="campus-buttons">
+      <button class="btn-campus" onclick="seleccionarCampus('11 Sur')">
+        <div class="campus-badge sur">📍</div>
+        <div class="campus-label">
+          <strong>11 Sur</strong>
+          <span>Hoja: Asistencias 11 Sur</span>
+        </div>
+        <span class="campus-arrow">›</span>
+      </button>
+
+      <button class="btn-campus" onclick="seleccionarCampus('Nacional')">
+        <div class="campus-badge nac">🏢</div>
+        <div class="campus-label">
+          <strong>Av. Nacional</strong>
+          <span>Hoja: Asistencias Av Nacional</span>
+        </div>
+        <span class="campus-arrow">›</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       PANTALLA 2: Registro de asistencia
+  ══════════════════════════════════════ -->
+  <div id="screen-registro">
+
+    <!-- Campus activo -->
+    <div class="campus-active-bar">
+      <span class="campus-name" id="campusActivoLabel">📍 11 Sur</span>
+      <button class="campus-change" onclick="cambiarCampus()">Cambiar campus</button>
+    </div>
+
+    <div class="form-body">
+
+      <div class="install-banner" id="installBanner" style="display:none;">
+        <p>📲 Instala esta app en tu celular para acceso rápido.</p>
+        <button class="btn-install" id="installBtn">Instalar</button>
+      </div>
+
+      <div id="reader"></div>
+
+      <div class="form-group">
+        <label class="field-label">ID Escaneado</label>
+        <div class="input-group">
+          <input type="text" id="id_escaneado" class="form-control border-0" placeholder="Escribe el ID o usa 🔳">
+          <button class="btn btn-light border-start px-3" onclick="toggleScanner()" id="scanBtn">🔳</button>
+        </div>
+        <p class="hint-text">📷 Presiona 🔳 para activar la cámara y escanear el QR.</p>
+      </div>
+
+      <div class="form-group">
+        <label class="field-label">Fecha</label>
+        <input type="text" id="fecha" class="form-control bg-light" readonly>
+      </div>
+      <div class="form-group">
+        <label class="field-label">Hora</label>
+        <input type="text" id="hora" class="form-control bg-light" readonly>
+      </div>
+
+    </div>
+
+    <div class="footer">
+      <button class="btn-footer btn-cancel" onclick="resetApp()">Limpiar</button>
+      <button class="btn-footer btn-save" id="saveBtn" onclick="guardar()">Guardar</button>
+    </div>
+  </div>
+
+</div><!-- /.app-container -->
+
+<script>
+  const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbxXvzmVXYJp4bDWH-MDXxBYUVjIayLgEfMN4OfQzm8P3GbHTH_bhObKP-JBxJzt98wC5w/exec';
+
+  // ─── Campus seleccionado ───────────────────────────────────────────────────
+  let campusActivo = null;
+
+  const CAMPUS_LABELS = {
+    '11 Sur':   '📍 11 Sur',
+    'Nacional': '🏢 Av. Nacional'
+  };
+
+  function seleccionarCampus(campus) {
+    campusActivo = campus;
+    document.getElementById('campusActivoLabel').textContent = CAMPUS_LABELS[campus];
+
+    // Transición entre pantallas
+    document.getElementById('screen-campus').style.display = 'none';
+    const reg = document.getElementById('screen-registro');
+    reg.style.display = 'flex';
+
+    updateDateTime();
+  }
+
+  function cambiarCampus() {
+    detenerCamara();
+    document.getElementById('id_escaneado').value = '';
+    document.getElementById('saveBtn').disabled = false;
+
+    document.getElementById('screen-registro').style.display = 'none';
+    document.getElementById('screen-campus').style.display = 'flex';
+    campusActivo = null;
+  }
+
+  // ─── Sonidos ───────────────────────────────────────────────────────────────
+  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+  function playSound(type) {
+    const ctx = audioCtx;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+
+    if (type === 'scan') {
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(1200, ctx.currentTime);
+      gain.gain.setValueAtTime(0.4, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 0.15);
+    } else if (type === 'success') {
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(880, ctx.currentTime);
+      osc.frequency.setValueAtTime(1100, ctx.currentTime + 0.12);
+      gain.gain.setValueAtTime(0.4, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 0.35);
+    } else if (type === 'error') {
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(300, ctx.currentTime);
+      osc.frequency.setValueAtTime(200, ctx.currentTime + 0.15);
+      gain.gain.setValueAtTime(0.3, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 0.4);
+    }
+  }
+
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js').catch(console.error);
+  }
+
+  // ─── Instalar PWA ─────────────────────────────────────────────────────────
+  let deferredPrompt;
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    document.getElementById('installBanner').style.display = 'flex';
+  });
+  document.getElementById('installBtn').addEventListener('click', async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') document.getElementById('installBanner').style.display = 'none';
+    deferredPrompt = null;
+  });
+  window.addEventListener('appinstalled', () => {
+    document.getElementById('installBanner').style.display = 'none';
+  });
+
+  // ─── Fecha y hora ─────────────────────────────────────────────────────────
+  function updateDateTime() {
+    const ahora = new Date();
+    document.getElementById('fecha').value = ahora.toLocaleDateString('es-MX');
+    document.getElementById('hora').value = ahora.toLocaleTimeString('es-MX');
+  }
+
+  // ─── Escáner QR ───────────────────────────────────────────────────────────
+  let html5QrCode = null;
+
+  function toggleScanner() {
+    if (html5QrCode && html5QrCode.isScanning) {
+      detenerCamara();
+    } else {
+      iniciarCamara();
+    }
+  }
+
+  async function iniciarCamara() {
+    const readerDiv = document.getElementById('reader');
+    readerDiv.style.display = 'block';
+    html5QrCode = new Html5Qrcode("reader");
+    const config = { fps: 10, qrbox: { width: 250, height: 250 }, aspectRatio: 1.0 };
+    try {
+      await html5QrCode.start(
+        { facingMode: "environment" },
+        config,
+        (text) => {
+          document.getElementById('id_escaneado').value = text;
+          detenerCamara();
+          playSound('scan');
+          Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: '✅ Escaneado', showConfirmButton: false, timer: 1500 });
+        }
+      );
+      document.getElementById('scanBtn').textContent = '⏹';
+    } catch (err) {
+      console.error("Error de cámara:", err);
+      Swal.fire('Error de cámara', 'Verifica que diste permiso de cámara al navegador.', 'error');
+      readerDiv.style.display = 'none';
+      html5QrCode = null;
+    }
+  }
+
+  async function detenerCamara() {
+    if (html5QrCode) {
+      try {
+        if (html5QrCode.isScanning) await html5QrCode.stop();
+        await html5QrCode.clear();
+      } catch (e) { console.log("Error al detener:", e); }
+      html5QrCode = null;
+    }
+    document.getElementById('reader').style.display = 'none';
+    document.getElementById('reader').innerHTML = '';
+    document.getElementById('scanBtn').textContent = '🔳';
+  }
+
+  // ─── Reset ────────────────────────────────────────────────────────────────
+  function resetApp() {
+    document.getElementById('id_escaneado').value = '';
+    document.getElementById('saveBtn').disabled = false;
+    detenerCamara();
+    updateDateTime();
+  }
+
+  // ─── Guardar ──────────────────────────────────────────────────────────────
+  async function guardar() {
+    const val = document.getElementById('id_escaneado').value.trim();
+    if (!val) return Swal.fire('Atención', 'Escanea un código o escribe el ID primero.', 'warning');
+    if (!campusActivo) return Swal.fire('Atención', 'No se detectó el campus seleccionado.', 'warning');
+
+    document.getElementById('saveBtn').disabled = true;
+    Swal.fire({ title: 'Guardando...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+
+    try {
+      const params = new URLSearchParams({
+        action: 'registrarAsistencia',
+        id_escaneado: val,
+        campus: campusActivo          // ← nuevo parámetro
+      });
+      const url = `${WEBAPP_URL}?${params.toString()}`;
+
+      let guardado = false;
+      try {
+        const res = await fetch(url, { method: 'GET', redirect: 'follow' });
+        const data = await res.json();
+        if (data.status === 'ok') guardado = true;
+        else throw new Error(data.message);
+      } catch (e) {
+        await fetch(url, { method: 'GET', mode: 'no-cors', redirect: 'follow' });
+        guardado = true;
+      }
+
+      if (guardado) {
+        playSound('success');
+        Swal.fire('¡Éxito!', `Asistencia registrada en ${CAMPUS_LABELS[campusActivo]}.`, 'success')
+          .then(() => resetApp());
+      }
+    } catch (err) {
+      document.getElementById('saveBtn').disabled = false;
+      playSound('error');
+      Swal.fire('Error de red', 'No se pudo conectar. Verifica tu conexión e intenta de nuevo.', 'error');
+    }
+  }
+</script>
+</body>
+</html>
