@@ -3,205 +3,335 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#1a73e8">
+  <meta name="theme-color" content="#1B3060">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="Asistencia">
-  <title>Registro de Asistencia</title>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Fundamentos">
+  <title>Fundamentos — Asistencia</title>
   <link rel="manifest" href="manifest.json">
-  <link rel="apple-touch-icon" href="icon.svg">
-  <link rel="icon" type="image/svg+xml" href="icon.svg">
+  <link rel="apple-touch-icon" href="logo-Naciones.jpg">
+  <link rel="icon" type="image/jpeg" href="logo-Naciones.jpg">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
   <style>
+    :root {
+      --navy:   #1B3060;
+      --navy2:  #14254a;
+      --light:  #f4f6fb;
+      --border: #dce3f0;
+      --text:   #1a1f36;
+      --muted:  #6b7694;
+    }
+
     * { box-sizing: border-box; }
     html, body { height: 100%; overflow: hidden; margin: 0; }
-    body { background: #f0f2f5; font-family: 'Segoe UI', sans-serif; }
 
-    /* ── Contenedor principal ── */
+    body {
+      background: var(--light);
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+
+    /* ── Fondo topográfico ─────────────────────────────────────── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600'%3E%3Cg fill='none' stroke='%231B3060' stroke-width='0.8' opacity='0.07'%3E%3Cellipse cx='300' cy='300' rx='280' ry='140'/%3E%3Cellipse cx='300' cy='300' rx='240' ry='110'/%3E%3Cellipse cx='300' cy='300' rx='200' ry='82'/%3E%3Cellipse cx='300' cy='300' rx='160' ry='58'/%3E%3Cellipse cx='300' cy='300' rx='120' ry='38'/%3E%3Cellipse cx='300' cy='300' rx='80' ry='22'/%3E%3Cellipse cx='300' cy='300' rx='40' ry='10'/%3E%3Cellipse cx='80' cy='120' rx='200' ry='90'/%3E%3Cellipse cx='80' cy='120' rx='160' ry='68'/%3E%3Cellipse cx='80' cy='120' rx='120' ry='48'/%3E%3Cellipse cx='80' cy='120' rx='80' ry='30'/%3E%3Cellipse cx='520' cy='480' rx='180' ry='80'/%3E%3Cellipse cx='520' cy='480' rx='140' ry='58'/%3E%3Cellipse cx='520' cy='480' rx='100' ry='38'/%3E%3Cellipse cx='520' cy='480' rx='60' ry='20'/%3E%3Cellipse cx='100' cy='500' rx='160' ry='70'/%3E%3Cellipse cx='100' cy='500' rx='120' ry='50'/%3E%3Cellipse cx='100' cy='500' rx='80' ry='32'/%3E%3Cellipse cx='500' cy='80' rx='150' ry='65'/%3E%3Cellipse cx='500' cy='80' rx='110' ry='44'/%3E%3Cellipse cx='500' cy='80' rx='70' ry='26'/%3E%3C/g%3E%3C/svg%3E");
+      background-size: 600px 600px;
+    }
+
+    /* ── Contenedor principal ──────────────────────────────────── */
     .app-container {
-      max-width: 480px; margin: auto; background: white;
+      position: relative; z-index: 1;
+      max-width: 480px; margin: auto; background: #fff;
       height: 100vh; height: 100dvh;
       display: flex; flex-direction: column;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      overflow: hidden; position: relative;
+      box-shadow: 0 8px 40px rgba(27,48,96,0.18);
+      overflow: hidden;
     }
 
-    /* ── Header ── */
+    /* ── Header ────────────────────────────────────────────────── */
     .header {
-      padding: 12px 18px; border-bottom: 1px solid #dee2e6;
-      text-align: center; font-weight: 700; color: #1a73e8;
-      font-size: 1.05rem; letter-spacing: 0.5px; flex-shrink: 0;
+      background: var(--navy);
+      padding: 14px 20px 12px;
+      display: flex; align-items: center; gap: 12px;
+      flex-shrink: 0;
     }
+    .header-logo { display: flex; align-items: center; gap: 14px; flex: 1; }
+    .header-naciones-img {
+      height: 32px; width: auto;
+      filter: brightness(0) invert(1);
+      flex-shrink: 0;
+    }
+    .header-divider {
+      width: 1px; height: 28px;
+      background: rgba(255,255,255,0.3); flex-shrink: 0;
+    }
+    .header-titles .brand {
+      display: block;
+      font-size: 0.95rem; font-weight: 800; color: #fff;
+      letter-spacing: 1.5px; text-transform: uppercase;
+    }
+    .header-titles .sub {
+      display: block;
+      font-size: 0.65rem; color: rgba(255,255,255,0.6);
+      letter-spacing: 1px; text-transform: uppercase; margin-top: 2px;
+    }
+
+    /* ── Menú header ── */
+    .header-menu-wrap { position: relative; }
+    .header-menu-btn {
+      background: rgba(255,255,255,0.12); border: none; color: #fff;
+      width: 36px; height: 36px; border-radius: 8px;
+      font-size: 1.3rem; cursor: pointer; display: flex;
+      align-items: center; justify-content: center;
+      transition: background 0.15s; line-height: 1;
+    }
+    .header-menu-btn:hover { background: rgba(255,255,255,0.22); }
+    .header-dropdown {
+      display: none; position: absolute; top: calc(100% + 8px); right: 0;
+      background: #fff; border-radius: 10px; min-width: 200px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.18); z-index: 100;
+      overflow: hidden;
+    }
+    .header-dropdown.open { display: block; }
+    .dropdown-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 13px 16px; font-size: 0.88rem; font-weight: 600;
+      color: var(--text); cursor: pointer; transition: background 0.12s;
+      border: none; background: none; width: 100%; text-align: left;
+    }
+    .dropdown-item:hover { background: var(--light); }
+    .dropdown-item svg { width: 18px; height: 18px; flex-shrink: 0; color: var(--navy); }
+    .dropdown-item.disabled { opacity: 0.4; cursor: not-allowed; }
 
     /* ══════════════════════════════════════
-       PANTALLA DE SELECCIÓN DE CAMPUS
+       PANTALLA 1: Selección de campus
     ══════════════════════════════════════ */
     #screen-campus {
       flex: 1; display: flex; flex-direction: column;
       align-items: center; justify-content: center;
-      padding: 28px 24px; gap: 20px;
-    }
-    .campus-intro {
-      text-align: center;
-    }
-    .campus-intro .campus-icon {
-      font-size: 3rem; margin-bottom: 10px; display: block;
-    }
-    .campus-intro h2 {
-      font-size: 1.25rem; font-weight: 700; color: #202124; margin: 0 0 6px;
-    }
-    .campus-intro p {
-      font-size: 0.88rem; color: #5f6368; margin: 0;
+      padding: 28px 20px; gap: 20px;
+      background: linear-gradient(180deg, #f8f9fd 0%, #fff 100%);
     }
 
-    .campus-buttons {
-      display: flex; flex-direction: column;
-      gap: 14px; width: 100%;
+    .campus-intro { text-align: center; }
+    .campus-intro h2 {
+      font-size: 1.05rem; font-weight: 700; color: var(--muted);
+      margin: 0; letter-spacing: 1px; text-transform: uppercase;
     }
+
+    .campus-buttons { display: flex; flex-direction: column; gap: 14px; width: 100%; }
+
     .btn-campus {
-      display: flex; align-items: center; gap: 16px;
-      background: #fff; border: 2px solid #dadce0;
-      border-radius: 14px; padding: 18px 22px;
+      display: flex; flex-direction: column;
+      align-items: flex-start; justify-content: flex-end;
+      border: none; border-radius: 16px; padding: 24px;
       cursor: pointer; transition: all 0.18s ease;
-      text-align: left; width: 100%;
+      text-align: left; width: 100%; height: 190px;
+      background-size: cover; background-position: center;
+      box-shadow: 0 4px 16px rgba(27,48,96,0.28);
+      position: relative; overflow: hidden;
     }
+    .btn-campus::before {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(10,20,50,0.78) 0%, rgba(10,20,50,0.18) 100%);
+      border-radius: 16px;
+      transition: background 0.18s;
+    }
+    .btn-campus:hover::before { background: linear-gradient(to top, rgba(10,20,50,0.88) 0%, rgba(10,20,50,0.3) 100%); }
     .btn-campus:hover {
-      border-color: #1a73e8;
-      box-shadow: 0 4px 14px rgba(26,115,232,0.15);
+      box-shadow: 0 8px 24px rgba(27,48,96,0.38);
       transform: translateY(-2px);
     }
-    .btn-campus:active {
-      transform: translateY(0);
-      box-shadow: none;
+    .btn-campus:active { transform: translateY(0); box-shadow: none; }
+
+    #btn-11sur   { background-image: url('campus-11sur.jpg'); }
+    #btn-nacional { background-image: url('campus-nacional.jpg'); }
+
+    .campus-label {
+      position: relative; z-index: 1;
     }
-    .btn-campus.selected {
-      border-color: #1a73e8;
-      background: #e8f0fe;
-    }
-    .campus-badge {
-      width: 52px; height: 52px; border-radius: 12px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.6rem; flex-shrink: 0;
-    }
-    .campus-badge.sur   { background: #e8f0fe; }
-    .campus-badge.nac   { background: #fce8e6; }
-    .campus-label { flex: 1; }
     .campus-label strong {
-      display: block; font-size: 1rem; font-weight: 700;
-      color: #202124; margin-bottom: 2px;
+      display: block; font-size: 1.4rem; font-weight: 800;
+      color: #fff; letter-spacing: 0.5px;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.5);
     }
-    .campus-label span {
-      font-size: 0.8rem; color: #5f6368;
+
+    /* ── Animaciones de transición ─────────────────────────────── */
+    @keyframes slideInRight {
+      from { transform: translateX(32px); opacity: 0; }
+      to   { transform: translateX(0);    opacity: 1; }
     }
-    .campus-arrow { font-size: 1.1rem; color: #9aa0a6; }
+    @keyframes slideInLeft {
+      from { transform: translateX(-32px); opacity: 0; }
+      to   { transform: translateX(0);     opacity: 1; }
+    }
+    .anim-right { animation: slideInRight 0.28s ease forwards; }
+    .anim-left  { animation: slideInLeft  0.28s ease forwards; }
 
     /* ══════════════════════════════════════
-       PANTALLA DE REGISTRO
+       PANTALLA 2: Registro de asistencia
     ══════════════════════════════════════ */
-    #screen-registro {
-      flex: 1; display: none; flex-direction: column; overflow: hidden;
-    }
+    #screen-registro { flex: 1; display: none; flex-direction: column; overflow: hidden; }
 
-    /* Banner de campus activo */
+    /* Barra campus activo */
     .campus-active-bar {
-      background: #1a73e8; color: white;
-      padding: 8px 16px;
+      background: var(--navy); color: white;
+      padding: 10px 18px;
       display: flex; align-items: center; justify-content: space-between;
       flex-shrink: 0;
+      border-bottom: 2px solid var(--navy2);
     }
     .campus-active-bar .campus-name {
-      font-weight: 700; font-size: 0.95rem;
+      font-weight: 700; font-size: 0.9rem; letter-spacing: 0.5px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .campus-name .dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #5be0a0; flex-shrink: 0;
+      box-shadow: 0 0 0 2px rgba(91,224,160,0.3);
     }
     .campus-active-bar .campus-change {
-      background: rgba(255,255,255,0.2); border: none; color: white;
-      border-radius: 6px; padding: 4px 10px; font-size: 0.78rem;
+      background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.25);
+      color: white; border-radius: 6px; padding: 5px 12px; font-size: 0.75rem;
       cursor: pointer; font-weight: 600; transition: background 0.15s;
+      letter-spacing: 0.3px;
     }
-    .campus-active-bar .campus-change:hover { background: rgba(255,255,255,0.35); }
+    .campus-active-bar .campus-change:hover { background: rgba(255,255,255,0.28); }
 
     .form-body {
-      padding: 16px 18px; flex-grow: 1; overflow: hidden;
+      padding: 20px 20px; flex-grow: 1; overflow: hidden;
       display: flex; flex-direction: column; justify-content: center;
+      gap: 2px;
+      background: linear-gradient(180deg, #f8f9fd 0%, #fff 60%);
     }
-    .field-label {
-      font-weight: 600; color: #5f6368; font-size: 0.82rem;
-      text-transform: uppercase; margin-bottom: 5px; display: block; letter-spacing: 0.4px;
-    }
-    .input-group {
-      border: 1.5px solid #dadce0; border-radius: 8px;
-      overflow: hidden; transition: border-color 0.2s;
-    }
-    .input-group:focus-within { border-color: #1a73e8; }
-    #reader {
-      width: 100%; border-radius: 12px; display: none; margin-bottom: 12px;
-      border: 2px solid #1a73e8; overflow: hidden; background: #000;
-    }
-    .form-group { margin-bottom: 14px; }
-    .hint-text { font-size: 0.78rem; color: #9aa0a6; margin-top: 4px; }
 
+    .field-label {
+      font-weight: 700; color: var(--muted); font-size: 0.72rem;
+      text-transform: uppercase; margin-bottom: 5px;
+      display: block; letter-spacing: 0.8px;
+    }
+
+    .input-group {
+      border: 1.5px solid var(--border); border-radius: 10px;
+      overflow: hidden; transition: border-color 0.2s, box-shadow 0.2s;
+      box-shadow: 0 1px 4px rgba(27,48,96,0.05);
+    }
+    .input-group:focus-within {
+      border-color: var(--navy);
+      box-shadow: 0 0 0 3px rgba(27,48,96,0.1);
+    }
+    .input-group .form-control {
+      font-size: 0.95rem; color: var(--text); padding: 10px 14px;
+    }
+    .input-group .scan-btn {
+      background: var(--navy); border: none; color: #fff;
+      padding: 0 16px; font-size: 1rem; cursor: pointer;
+      transition: background 0.15s; display: flex; align-items: center;
+    }
+    .input-group .scan-btn:hover { background: var(--navy2); }
+    .input-group .scan-btn svg { width: 20px; height: 20px; }
+
+    #reader {
+      width: 100%; border-radius: 10px; display: none; margin-bottom: 14px;
+      border: 2px solid var(--navy); overflow: hidden; background: #000;
+    }
+
+    .form-group { margin-bottom: 14px; }
+
+    .date-row { display: flex; gap: 12px; }
+    .date-row .form-group { flex: 1; margin-bottom: 0; }
+
+    .hint-text {
+      font-size: 0.75rem; color: var(--muted); margin-top: 5px;
+      display: flex; align-items: center; gap: 4px;
+    }
+    .hint-text svg { width: 12px; height: 12px; flex-shrink: 0; }
+
+    /* Banner instalación */
     .install-banner {
-      background: #e6f4ea; border: 1.5px solid #34a853;
+      background: #eef2ff; border: 1.5px solid #c7d4f8;
       border-radius: 10px; padding: 10px 14px; margin-bottom: 14px;
       display: flex; align-items: center; justify-content: space-between; gap: 10px;
     }
-    .install-banner p { margin: 0; font-size: 0.85rem; color: #1e7e34; line-height: 1.3; }
+    .install-banner p { margin: 0; font-size: 0.82rem; color: var(--navy); line-height: 1.35; }
     .btn-install {
-      background: #34a853; color: white; border: none;
-      padding: 8px 16px; border-radius: 6px; font-weight: 600;
-      font-size: 0.85rem; cursor: pointer; white-space: nowrap;
+      background: var(--navy); color: white; border: none;
+      padding: 7px 16px; border-radius: 6px; font-weight: 700;
+      font-size: 0.8rem; cursor: pointer; white-space: nowrap;
+      letter-spacing: 0.3px;
     }
 
+    /* Footer */
     .footer {
-      display: flex; border-top: 1px solid #dee2e6;
-      padding: 10px 12px; gap: 10px; flex-shrink: 0;
+      display: flex; border-top: 1.5px solid var(--border);
+      padding: 12px 14px; gap: 10px; flex-shrink: 0;
+      background: #fff;
     }
     .btn-footer {
-      flex: 1; padding: 12px; border-radius: 8px; border: none;
-      font-weight: 600; cursor: pointer; font-size: 1rem;
-      transition: opacity 0.2s;
+      flex: 1; padding: 13px; border-radius: 10px; border: none;
+      font-weight: 700; cursor: pointer; font-size: 0.95rem;
+      transition: opacity 0.15s, transform 0.1s;
+      letter-spacing: 0.3px;
     }
-    .btn-footer:active { opacity: 0.8; }
-    .btn-cancel { background: #f1f3f4; color: #5f6368; }
-    .btn-save { background: #1a73e8; color: white; }
-    .btn-save:disabled { background: #a8c7fa; cursor: not-allowed; }
+    .btn-footer:active { opacity: 0.8; transform: scale(0.98); }
+    .btn-cancel {
+      background: var(--light); color: var(--muted);
+      border: 1.5px solid var(--border);
+    }
+    .btn-save { background: var(--navy); color: white; }
+    .btn-save:disabled { background: #a2b4d6; cursor: not-allowed; }
   </style>
 </head>
 <body>
 <div class="app-container">
 
   <!-- ── Header ── -->
-  <div class="header">📋 REGISTRO DE ASISTENCIA</div>
+  <div class="header">
+    <div class="header-logo">
+      <img src="Nacioneslogo.png" alt="Naciones" class="header-naciones-img">
+      <div class="header-divider"></div>
+      <div class="header-titles">
+        <span class="brand">Fundamentos</span>
+        <span class="sub">Registro de Asistencia</span>
+      </div>
+    </div>
+    <div class="header-menu-wrap">
+      <button class="header-menu-btn" id="menuBtn" onclick="toggleMenu()">⋮</button>
+      <div class="header-dropdown" id="headerDropdown">
+        <button class="dropdown-item" id="menuInstallItem" onclick="installFromMenu()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          Instalar app
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- ══════════════════════════════════════
        PANTALLA 1: Selección de campus
   ══════════════════════════════════════ -->
   <div id="screen-campus">
     <div class="campus-intro">
-      <span class="campus-icon">🏫</span>
-      <h2>¿Desde qué campus registras?</h2>
-      <p>Selecciona la sede para guardar las asistencias en la hoja correcta.</p>
+      <h2>Selecciona tu campus</h2>
     </div>
 
     <div class="campus-buttons">
-      <button class="btn-campus" onclick="seleccionarCampus('11 Sur')">
-        <div class="campus-badge sur">📍</div>
+      <button id="btn-11sur" class="btn-campus" onclick="seleccionarCampus('11 Sur')">
         <div class="campus-label">
           <strong>11 Sur</strong>
-          <span>Hoja: Asistencias 11 Sur</span>
         </div>
-        <span class="campus-arrow">›</span>
       </button>
 
-      <button class="btn-campus" onclick="seleccionarCampus('Nacional')">
-        <div class="campus-badge nac">🏢</div>
+      <button id="btn-nacional" class="btn-campus" onclick="seleccionarCampus('Nacional')">
         <div class="campus-label">
           <strong>Av. Nacional</strong>
-          <span>Hoja: Asistencias Av Nacional</span>
         </div>
-        <span class="campus-arrow">›</span>
       </button>
     </div>
   </div>
@@ -213,42 +343,61 @@
 
     <!-- Campus activo -->
     <div class="campus-active-bar">
-      <span class="campus-name" id="campusActivoLabel">📍 11 Sur</span>
+      <span class="campus-name">
+        <span class="dot"></span>
+        <span id="campusActivoLabel">11 Sur</span>
+      </span>
       <button class="campus-change" onclick="cambiarCampus()">Cambiar campus</button>
     </div>
 
     <div class="form-body">
 
       <div class="install-banner" id="installBanner" style="display:none;">
-        <p>📲 Instala esta app en tu celular para acceso rápido.</p>
+        <p>Instala Fundamentos en tu celular para acceso rápido.</p>
         <button class="btn-install" id="installBtn">Instalar</button>
       </div>
 
       <div id="reader"></div>
 
       <div class="form-group">
-        <label class="field-label">ID Escaneado</label>
+        <label class="field-label">ID del alumno</label>
         <div class="input-group">
-          <input type="text" id="id_escaneado" class="form-control border-0" placeholder="Escribe el ID o usa 🔳">
-          <button class="btn btn-light border-start px-3" onclick="toggleScanner()" id="scanBtn">🔳</button>
+          <input type="text" id="id_escaneado" class="form-control border-0"
+            placeholder="Escribe el ID o escanea el QR">
+          <button class="scan-btn" onclick="toggleScanner()" id="scanBtn" title="Escanear QR">
+            <!-- QR icon -->
+            <svg id="iconScan" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+              <path d="M3 3h7v7H3V3zm2 2v3h3V5H5zM14 3h7v7h-7V3zm2 2v3h3V5h-3zM3 14h7v7H3v-7zm2 2v3h3v-3H5zM16 14h2v2h-2v-2zM14 14h2v2h-2v-2zM18 16h2v2h-2v-2zM16 18h2v2h-2v-2zM14 18h2v2h-2v-2zM18 20h2v2h-2v-2zM20 14h2v2h-2v-2z"/>
+            </svg>
+            <svg id="iconStop" viewBox="0 0 24 24" fill="currentColor" style="display:none">
+              <rect x="5" y="5" width="14" height="14" rx="2"/>
+            </svg>
+          </button>
         </div>
-        <p class="hint-text">📷 Presiona 🔳 para activar la cámara y escanear el QR.</p>
+        <p class="hint-text">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/></svg>
+          Toca el ícono para activar la cámara y escanear.
+        </p>
       </div>
 
-      <div class="form-group">
-        <label class="field-label">Fecha</label>
-        <input type="text" id="fecha" class="form-control bg-light" readonly>
-      </div>
-      <div class="form-group">
-        <label class="field-label">Hora</label>
-        <input type="text" id="hora" class="form-control bg-light" readonly>
+      <div class="date-row">
+        <div class="form-group">
+          <label class="field-label">Fecha</label>
+          <input type="text" id="fecha" class="form-control bg-light text-center fw-semibold" readonly
+            style="border-radius:10px; border:1.5px solid var(--border); font-size:0.88rem;">
+        </div>
+        <div class="form-group">
+          <label class="field-label">Hora</label>
+          <input type="text" id="hora" class="form-control bg-light text-center fw-semibold" readonly
+            style="border-radius:10px; border:1.5px solid var(--border); font-size:0.88rem;">
+        </div>
       </div>
 
     </div>
 
     <div class="footer">
       <button class="btn-footer btn-cancel" onclick="resetApp()">Limpiar</button>
-      <button class="btn-footer btn-save" id="saveBtn" onclick="guardar()">Guardar</button>
+      <button class="btn-footer btn-save" id="saveBtn" onclick="guardar()">Guardar asistencia</button>
     </div>
   </div>
 
@@ -257,23 +406,22 @@
 <script>
   const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwnPLi24mkYpj-omJC_1NKMwS8tCsM8b1RnmXV74po5EQLM6XzQMJhHlRoXxeuoAkf2/exec';
 
-  // ─── Campus seleccionado ───────────────────────────────────────────────────
   let campusActivo = null;
 
   const CAMPUS_LABELS = {
-    '11 Sur':   '📍 11 Sur',
-    'Nacional': '🏢 Av. Nacional'
+    '11 Sur':   '11 Sur',
+    'Nacional': 'Av. Nacional'
   };
 
   function seleccionarCampus(campus) {
     campusActivo = campus;
     document.getElementById('campusActivoLabel').textContent = CAMPUS_LABELS[campus];
-
-    // Transición entre pantallas
     document.getElementById('screen-campus').style.display = 'none';
     const reg = document.getElementById('screen-registro');
     reg.style.display = 'flex';
-
+    reg.classList.remove('anim-left', 'anim-right');
+    void reg.offsetWidth; // reflow para reiniciar animación
+    reg.classList.add('anim-right');
     updateDateTime();
   }
 
@@ -281,13 +429,16 @@
     detenerCamara();
     document.getElementById('id_escaneado').value = '';
     document.getElementById('saveBtn').disabled = false;
-
     document.getElementById('screen-registro').style.display = 'none';
-    document.getElementById('screen-campus').style.display = 'flex';
+    const cam = document.getElementById('screen-campus');
+    cam.style.display = 'flex';
+    cam.classList.remove('anim-left', 'anim-right');
+    void cam.offsetWidth;
+    cam.classList.add('anim-left');
     campusActivo = null;
   }
 
-  // ─── Sonidos ───────────────────────────────────────────────────────────────
+  // ─── Sonidos ────────────────────────────────────────────────────────────────
   const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
   function playSound(type) {
@@ -302,24 +453,21 @@
       osc.frequency.setValueAtTime(1200, ctx.currentTime);
       gain.gain.setValueAtTime(0.4, ctx.currentTime);
       gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
-      osc.start(ctx.currentTime);
-      osc.stop(ctx.currentTime + 0.15);
+      osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.15);
     } else if (type === 'success') {
       osc.type = 'sine';
       osc.frequency.setValueAtTime(880, ctx.currentTime);
       osc.frequency.setValueAtTime(1100, ctx.currentTime + 0.12);
       gain.gain.setValueAtTime(0.4, ctx.currentTime);
       gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
-      osc.start(ctx.currentTime);
-      osc.stop(ctx.currentTime + 0.35);
+      osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.35);
     } else if (type === 'error') {
       osc.type = 'sawtooth';
       osc.frequency.setValueAtTime(300, ctx.currentTime);
       osc.frequency.setValueAtTime(200, ctx.currentTime + 0.15);
       gain.gain.setValueAtTime(0.3, ctx.currentTime);
       gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
-      osc.start(ctx.currentTime);
-      osc.stop(ctx.currentTime + 0.4);
+      osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.4);
     }
   }
 
@@ -327,32 +475,45 @@
     navigator.serviceWorker.register('sw.js').catch(console.error);
   }
 
-  // ─── Instalar PWA ─────────────────────────────────────────────────────────
+  // ─── Menú header ────────────────────────────────────────────────────────────
+  function toggleMenu() {
+    document.getElementById('headerDropdown').classList.toggle('open');
+  }
+  document.addEventListener('click', (e) => {
+    if (!document.getElementById('menuBtn').contains(e.target)) {
+      document.getElementById('headerDropdown').classList.remove('open');
+    }
+  });
+
+  // ─── Instalar PWA ───────────────────────────────────────────────────────────
   let deferredPrompt;
   window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     deferredPrompt = e;
-    document.getElementById('installBanner').style.display = 'flex';
+    document.getElementById('menuInstallItem').classList.remove('disabled');
   });
-  document.getElementById('installBtn').addEventListener('click', async () => {
-    if (!deferredPrompt) return;
+  async function installFromMenu() {
+    document.getElementById('headerDropdown').classList.remove('open');
+    if (!deferredPrompt) {
+      Swal.fire('Ya instalada', 'La app ya está instalada o tu navegador no lo permite en este momento.', 'info');
+      return;
+    }
     deferredPrompt.prompt();
     const { outcome } = await deferredPrompt.userChoice;
-    if (outcome === 'accepted') document.getElementById('installBanner').style.display = 'none';
     deferredPrompt = null;
-  });
+  }
   window.addEventListener('appinstalled', () => {
-    document.getElementById('installBanner').style.display = 'none';
+    document.getElementById('menuInstallItem').classList.add('disabled');
   });
 
-  // ─── Fecha y hora ─────────────────────────────────────────────────────────
+  // ─── Fecha y hora ───────────────────────────────────────────────────────────
   function updateDateTime() {
     const ahora = new Date();
     document.getElementById('fecha').value = ahora.toLocaleDateString('es-MX');
     document.getElementById('hora').value = ahora.toLocaleTimeString('es-MX');
   }
 
-  // ─── Escáner QR ───────────────────────────────────────────────────────────
+  // ─── Escáner QR ─────────────────────────────────────────────────────────────
   let html5QrCode = null;
 
   function toggleScanner() {
@@ -367,7 +528,7 @@
     const readerDiv = document.getElementById('reader');
     readerDiv.style.display = 'block';
     html5QrCode = new Html5Qrcode("reader");
-    const config = { fps: 10, qrbox: { width: 250, height: 250 }, aspectRatio: 1.0 };
+    const config = { fps: 10, qrbox: { width: 240, height: 240 }, aspectRatio: 1.0 };
     try {
       await html5QrCode.start(
         { facingMode: "environment" },
@@ -376,13 +537,15 @@
           document.getElementById('id_escaneado').value = text;
           detenerCamara();
           playSound('scan');
-          Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: '✅ Escaneado', showConfirmButton: false, timer: 1500 });
+          if (navigator.vibrate) navigator.vibrate([40, 30, 80]);
+          Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'QR escaneado', showConfirmButton: false, timer: 1500 });
         }
       );
-      document.getElementById('scanBtn').textContent = '⏹';
+      document.getElementById('iconScan').style.display = 'none';
+      document.getElementById('iconStop').style.display = '';
     } catch (err) {
       console.error("Error de cámara:", err);
-      Swal.fire('Error de cámara', 'Verifica que diste permiso de cámara al navegador.', 'error');
+      Swal.fire('Sin acceso a la cámara', 'Verifica que diste permiso de cámara al navegador.', 'error');
       readerDiv.style.display = 'none';
       html5QrCode = null;
     }
@@ -398,10 +561,11 @@
     }
     document.getElementById('reader').style.display = 'none';
     document.getElementById('reader').innerHTML = '';
-    document.getElementById('scanBtn').textContent = '🔳';
+    document.getElementById('iconScan').style.display = '';
+    document.getElementById('iconStop').style.display = 'none';
   }
 
-  // ─── Reset ────────────────────────────────────────────────────────────────
+  // ─── Reset ──────────────────────────────────────────────────────────────────
   function resetApp() {
     document.getElementById('id_escaneado').value = '';
     document.getElementById('saveBtn').disabled = false;
@@ -409,20 +573,20 @@
     updateDateTime();
   }
 
-  // ─── Guardar ──────────────────────────────────────────────────────────────
+  // ─── Guardar ────────────────────────────────────────────────────────────────
   async function guardar() {
     const val = document.getElementById('id_escaneado').value.trim();
     if (!val) return Swal.fire('Atención', 'Escanea un código o escribe el ID primero.', 'warning');
     if (!campusActivo) return Swal.fire('Atención', 'No se detectó el campus seleccionado.', 'warning');
 
     document.getElementById('saveBtn').disabled = true;
-    Swal.fire({ title: 'Guardando...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+    Swal.fire({ title: 'Registrando...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
 
     try {
       const params = new URLSearchParams({
         action: 'registrarAsistencia',
         id_escaneado: val,
-        campus: campusActivo          // ← nuevo parámetro
+        campus: campusActivo
       });
       const url = `${WEBAPP_URL}?${params.toString()}`;
 
@@ -439,7 +603,7 @@
 
       if (guardado) {
         playSound('success');
-        Swal.fire('¡Éxito!', `Asistencia registrada en ${CAMPUS_LABELS[campusActivo]}.`, 'success')
+        Swal.fire('¡Asistencia registrada!', `Campus: ${CAMPUS_LABELS[campusActivo]}`, 'success')
           .then(() => resetApp());
       }
     } catch (err) {

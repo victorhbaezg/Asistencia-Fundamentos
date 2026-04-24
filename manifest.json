@@ -1,31 +1,19 @@
 {
-  "name": "Registro de Asistencia",
-  "short_name": "Asistencia",
-  "description": "Registro de asistencia con escaneo QR para Fundamentos",
+  "name": "Fundamentos — Asistencia",
+  "short_name": "Fundamentos",
+  "description": "Registro de asistencia del discipulado Fundamentos — Iglesia Naciones",
   "start_url": "./index.html",
   "display": "standalone",
   "orientation": "portrait",
-  "theme_color": "#1a73e8",
-  "background_color": "#ffffff",
+  "theme_color": "#1B3060",
+  "background_color": "#1B3060",
   "lang": "es",
   "icons": [
     {
-      "src": "icon.svg",
+      "src": "logo-Naciones.jpg",
       "sizes": "any",
-      "type": "image/svg+xml",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
+      "type": "image/jpeg",
       "purpose": "any"
-    },
-    {
-      "src": "icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
     }
   ]
 }
