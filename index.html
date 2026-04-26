@@ -147,8 +147,9 @@
     }
     .btn-campus:active { transform: translateY(0); box-shadow: none; }
 
-    #btn-11sur   { background-image: url('campus-11sur.jpg'); }
-    #btn-nacional { background-image: url('campus-nacional.jpg'); }
+    #btn-11sur      { background-image: url('campus-11sur.jpg'); }
+    #btn-nacional   { background-image: url('campus-nacional.jpg'); }
+    #btn-huejotzingo { background-image: url('campus-huejotzingo.jpg'); }
 
     .campus-label {
       position: relative; z-index: 1;
@@ -333,6 +334,12 @@
           <strong>Av. Nacional</strong>
         </div>
       </button>
+
+      <button id="btn-huejotzingo" class="btn-campus" onclick="seleccionarCampus('Huejotzingo')">
+        <div class="campus-label">
+          <strong>Huejotzingo</strong>
+        </div>
+      </button>
     </div>
   </div>
 
@@ -409,8 +416,9 @@
   let campusActivo = null;
 
   const CAMPUS_LABELS = {
-    '11 Sur':   '11 Sur',
-    'Nacional': 'Av. Nacional'
+    '11 Sur':      '11 Sur',
+    'Nacional':    'Av. Nacional',
+    'Huejotzingo': 'Huejotzingo'
   };
 
   function seleccionarCampus(campus) {
